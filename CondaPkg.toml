@@ -1,4 +1,3 @@
+[pip.deps]
+pyhctsa = "@git+https://github.com/brendanjohnharris/pyhctsa/@brendanw"
 
-[pip.deps.pyhctsa]
-editable = true
-version = "@../pyhctsa"

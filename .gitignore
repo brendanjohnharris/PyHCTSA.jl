@@ -36,3 +36,7 @@ profile.pb.gz
 
 # CondaPkg
 .CondaPkg/
+AGENTS.md
+CLAUDE.md
+.claude
+operations.log
