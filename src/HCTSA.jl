@@ -424,9 +424,29 @@ function get_op(mopval, opname, mop)
 end
 get_op(opname, mop) = mopval -> get_op(mopval, opname, mop)
 
-function cache_mopops(mops = build_mops(), path = joinpath(@__DIR__, "mopops.json"))
+function mop_quality(y)
+    Q = map(y) do mopval
+        if mopval isa PyException || pyisinstance(mopval, pybuiltins.Exception)
+            return false
+        elseif pyisinstance(mopval, pybuiltins.str)
+            return false
+        elseif pyisinstance(mopval, numbers.Number)
+            return true
+        elseif pyisinstance(mopval, numpy.ndarray)
+            return true
+        elseif pyisinstance(mopval, pybuiltins.dict)
+            return true
+        else
+            return false
+        end
+    end
+end
+
+function cache_mopops(mops = build_mops(),
+                      path = joinpath(@__DIR__, "../assets/mopops.json"))
     x = rand(5000)
     y = mops(x, Union{Py, PyException})
+    Q1 = mop_quality(y)
     mopops = map(y) do mopval
         if mopval isa PyException || pyisinstance(mopval, pybuiltins.Exception)
             return String[]
@@ -439,6 +459,7 @@ function cache_mopops(mops = build_mops(), path = joinpath(@__DIR__, "mopops.jso
 
     x = testdata(:test)
     y = mops(x, Union{Py, PyException})
+    Q2 = mop_quality(y)
     test_mopops = map(y) do mopval
         if mopval isa PyException || pyisinstance(mopval, pybuiltins.Exception)
             return String[]
@@ -465,9 +486,13 @@ function cache_mopops(mops = build_mops(), path = joinpath(@__DIR__, "mopops.jso
     open(path, "w") do io
         JSON.print(io, mopops, 2)
     end
-    return mopops
+    Q = Q1 .| Q2 # False here means we didn't successfully capture the 'output mode' of the mop, so we can't reliably use it for inferring ops
+    if !(all(Q))
+        @debug "Some mops did not return valid outputs during caching, so their mopops may be incomplete or inaccurate. Consider running mopops caching with a different test input or checking for errors in mop execution."
+    end
+    return mopops, Q
 end
-function load_mopops(path = joinpath(@__DIR__, "mopops.json"))
+function load_mopops(path = joinpath(@__DIR__, "../assets/mopops.json"))
     open(path, "r") do io
         mopops = JSON.parse(read(io, String))
         return mopops

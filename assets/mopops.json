@@ -449,7 +449,7 @@
     "fexpacf_r2",
     "fexpacf_stdres"
   ],
-  "autocorr_shape_posDrown": [
+  "autocorr_shape_pos_drown": [
     "Nac",
     "sumacf",
     "meanacf",

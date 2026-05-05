@@ -1,3 +1,3 @@
 [pip.deps]
-pyhctsa = "@git+https://github.com/brendanjohnharris/pyhctsa/@brendanw"
+pyhctsa = "@git+https://github.com/dynamicsandneuralsystems/pyhctsa/@main"
 

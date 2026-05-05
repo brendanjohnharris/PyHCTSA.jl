@@ -1,11 +1,18 @@
 [deps]
+Asciicast = "2600d445-abca-43b9-92aa-ce144ac0b05b"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 HCTSA = "4f3a0022-ff71-4cd2-bcdc-9e43a2820929"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 MoreMaps = "d6ea422f-1f55-4be1-bfc3-e7c09aa4d855"
+PythonCall = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
 TestItems = "1c621080-faea-4a02-84b6-bbd5e436b8fe"
+TimeseriesFeatures = "f3112013-b923-4dfa-b867-8806c885f823"
+
+[sources]
+TimeseriesFeatures = {rev = "main", url = "https://github.com/brendanjohnharris/TimeseriesFeatures.jl"}
