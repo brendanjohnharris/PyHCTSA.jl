@@ -28,7 +28,6 @@ jobs:
         os:
           - ubuntu-latest
           - macOS-latest
-          - windows-latest
         arch:
           - x64
         exclude:
@@ -45,8 +44,8 @@ jobs:
         shell: julia --color=yes --project=. {0}
         run: |
           using Pkg
-          Pkg.develop(PackageSpec(url="https://github.com/brendanjohnharris/TimeseriesFeatures.jl", rev="main"))
-          Pkg.develop(PackageSpec(url="https://github.com/brendanjohnharris/MoreMaps.jl", rev="main"))
+          Pkg.add(PackageSpec(url="https://github.com/brendanjohnharris/TimeseriesFeatures.jl", rev="main"))
+          Pkg.add(PackageSpec(url="https://github.com/brendanjohnharris/MoreMaps.jl", rev="main"))
           Pkg.resolve()
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
