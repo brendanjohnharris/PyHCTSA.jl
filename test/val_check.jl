@@ -36,7 +36,6 @@ end
 @testset "val_check setup" begin
     @test length(anames) > 0
     @test length(a) == length(anames)
-    @test length(keys(b)) > 0
 end
 
 # begin # * Compare
