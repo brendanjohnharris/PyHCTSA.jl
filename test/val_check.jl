@@ -134,7 +134,7 @@ end
 
 begin # * Show features that are slower
     toldelta = round.(tjulia, sigdigits = 3) .- round.(tpython, sigdigits = 3)
-    slowidxs = findall(toldelta .< 0)
+    slowidxs = findall(toldelta .> 0)
     for idx in slowidxs
         aname = anames[idx]
         @info "$aname slower in Julia ($(round(tjulia[idx], sigdigits=3))s vs $(round(tpython[idx], sigdigits=3))s)"
