@@ -43,7 +43,7 @@ jobs:
       - uses: julia-actions/cache@v2
       - name: Pin unregistered dependencies
         run: |
-          julia --color=yes --project=. -e "using Pkg; Pkg.develop(PackageSpec(url=\"https://github.com/brendanjohnharris/TimeseriesFeatures.jl\", rev=\"main\")); Pkg.develop(PackageSpec(url=\"https://github.com/brendanjohnharris/MoreMaps.jl\", rev=\"main\")); Pkg.resolve()"
+          julia --color=yes --project=. -e "using Pkg; Pkg.add(PackageSpec(url=\"https://github.com/brendanjohnharris/TimeseriesFeatures.jl\", rev=\"main\")); Pkg.add(PackageSpec(url=\"https://github.com/brendanjohnharris/MoreMaps.jl\", rev=\"main\")); Pkg.resolve()"
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-processcoverage@v1
