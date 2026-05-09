@@ -14,9 +14,9 @@ x = HCTSA.testdata(:test)
 y = HCTSA.as_numpy(x)
 
 @info "Timing Julia implementation..."
-a = @benchmark $hctsa($x) samples=10 seconds=120 evals=1
+a = @benchmark $hctsa($x) samples = 10 seconds = 120 evals = 1
 
 @info "Timing Python implementation..."
-b = @benchmark $pyhctsa.extract($y) samples=10 seconds=120 evals=1
+b = @benchmark $pyhctsa.extract($y) samples = 10 seconds = 120 evals = 1
 
 @info "All tests complete."

@@ -54,22 +54,24 @@ begin
 
     mopops = HCTSA.load_mopops()
     ops = map(mops |> collect) do mop
-              description = getdescription(mop)
-              keywords = getkeywords(mop)
-              name = getname(mop)
-              base_name = JSON.parse(getdescription(mop))["base_name"]
-              opnames = mopops[base_name]
-              if isempty(opnames)
-                  return [SuperFeature(convert_op, name, description, keywords, mop)] |>
-                         FeatureSet
-              else
-                  return map(opnames) do opname
-                             SuperFeature(get_op(opname, mop),
-                                          Symbol("$(name)_$opname"),
-                                          description, keywords, mop)
-                         end |> collect |> FeatureSet
-              end
-          end |> Iterators.Flatten |> collect |> FeatureSet
+        description = getdescription(mop)
+        keywords = getkeywords(mop)
+        name = getname(mop)
+        base_name = JSON.parse(getdescription(mop))["base_name"]
+        opnames = mopops[base_name]
+        if isempty(opnames)
+            return [SuperFeature(convert_op, name, description, keywords, mop)] |>
+                FeatureSet
+        else
+            return map(opnames) do opname
+                SuperFeature(
+                    get_op(opname, mop),
+                    Symbol("$(name)_$opname"),
+                    description, keywords, mop
+                )
+            end |> collect |> FeatureSet
+        end
+    end |> Iterators.Flatten |> collect |> FeatureSet
     Y = ops(rand(2000))
 end
 

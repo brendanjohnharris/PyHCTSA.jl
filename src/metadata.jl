@@ -1,19 +1,21 @@
-const featuretable = ["nonlin_autocorr_035" "AC_nl_035" "⟨x²(t)⋅x(t-3)⋅x(t-5)⟩ₜ";
-                      "nonlin_autocorr_036" "AC_nl_036" "⟨x²(t)⋅x(t-3)⋅x(t-6)⟩ₜ";
-                      "nonlin_autocorr_112" "AC_nl_112" "⟨x(t)⋅x²(t-1)⋅x(t-2)⟩ₜ";
-                      "ami3_10bin" "CO_HistogramAMI_even_10_3" "Automutual information at lag 3 using a 10-bin histogram estimation method";
-                      "ami3_2bin" "CO_HistogramAMI_even_2_3" "Automutual information at lag 3 using a 2-bin histogram estimation method";
-                      "increment_ami8" "IN_AutoMutualInfoStats_diff_20_gaussian_ami8" "Mutual information at time lag 8 using Gaussian estimator";
-                      "dfa_longscale_fit" "SC_FluctAnal_2_dfa_50_2_logi_r2_se2" "Timescale-fluctuation curve using DFA";
-                      "noise_titration" "CO_AddNoise_1_even_10_ami_at_10" "Automutual information at lag 1 after adding white noise at a SNR of 1";
-                      "prediction_scale" "FC_LoopLocalSimple_mean_stderr_chn" "Change in prediction error from a mean forecaster using prior windows of data";
-                      "floating_circle" "CO_TranslateShape_circle_35_pts_std" "Variability of time-series points inside a circle translated across the time domain.";
-                      "walker_crossings" "PH_Walker_momentum_5_w_momentumzcross" "Statistics of a simulated mechanical particle driven by the time series";
-                      "walker_diff" "PH_Walker_biasprop_05_01_sw_meanabsdiff" "Statistics of a simulated mechanical particle driven by the time series";
-                      "stationarity_min" "SY_DriftingMean50_min" "Minimum mean across 50 segments divided by mean variance in segments";
-                      "stationarity_floating_circle" "CO_TranslateShape_circle_35_pts_statav4_m" "StatAv of the statistics of local time-series shapes";
-                      "outlier_corr" "DN_RemovePoints_absclose_05_ac2rat" "Change in lag-2 autocorrelation from removing 50% of the time-series values closest to the mean";
-                      "outlier_asymmetry" "ST_LocalExtrema_n100_diffmaxabsmin" "Asymmetry in extreme local events"]
+const featuretable = [
+    "nonlin_autocorr_035" "AC_nl_035" "⟨x²(t)⋅x(t-3)⋅x(t-5)⟩ₜ";
+    "nonlin_autocorr_036" "AC_nl_036" "⟨x²(t)⋅x(t-3)⋅x(t-6)⟩ₜ";
+    "nonlin_autocorr_112" "AC_nl_112" "⟨x(t)⋅x²(t-1)⋅x(t-2)⟩ₜ";
+    "ami3_10bin" "CO_HistogramAMI_even_10_3" "Automutual information at lag 3 using a 10-bin histogram estimation method";
+    "ami3_2bin" "CO_HistogramAMI_even_2_3" "Automutual information at lag 3 using a 2-bin histogram estimation method";
+    "increment_ami8" "IN_AutoMutualInfoStats_diff_20_gaussian_ami8" "Mutual information at time lag 8 using Gaussian estimator";
+    "dfa_longscale_fit" "SC_FluctAnal_2_dfa_50_2_logi_r2_se2" "Timescale-fluctuation curve using DFA";
+    "noise_titration" "CO_AddNoise_1_even_10_ami_at_10" "Automutual information at lag 1 after adding white noise at a SNR of 1";
+    "prediction_scale" "FC_LoopLocalSimple_mean_stderr_chn" "Change in prediction error from a mean forecaster using prior windows of data";
+    "floating_circle" "CO_TranslateShape_circle_35_pts_std" "Variability of time-series points inside a circle translated across the time domain.";
+    "walker_crossings" "PH_Walker_momentum_5_w_momentumzcross" "Statistics of a simulated mechanical particle driven by the time series";
+    "walker_diff" "PH_Walker_biasprop_05_01_sw_meanabsdiff" "Statistics of a simulated mechanical particle driven by the time series";
+    "stationarity_min" "SY_DriftingMean50_min" "Minimum mean across 50 segments divided by mean variance in segments";
+    "stationarity_floating_circle" "CO_TranslateShape_circle_35_pts_statav4_m" "StatAv of the statistics of local time-series shapes";
+    "outlier_corr" "DN_RemovePoints_absclose_05_ac2rat" "Change in lag-2 autocorrelation from removing 50% of the time-series values closest to the mean";
+    "outlier_asymmetry" "ST_LocalExtrema_n100_diffmaxabsmin" "Asymmetry in extreme local events"
+]
 
 const featurenames = featuretable[:, 2] .|> Symbol
 const short_featurenames = featuretable[:, 1] .|> Symbol

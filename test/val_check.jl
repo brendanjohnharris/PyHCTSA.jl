@@ -58,7 +58,7 @@ Q = map(enumerate(anames)) do (i, fname)
     if isnan(_a) && isnan(_b)
         return true
     end
-    q = isapprox(_a, _b, rtol = 1e-3, atol = 1e-4)
+    q = isapprox(_a, _b, rtol = 1.0e-3, atol = 1.0e-4)
     if !q
         @warn "Mismatch on feature $(fname): Julia $(_a) vs Python $(_b)"
     end
@@ -106,7 +106,7 @@ begin # * Time feature by feature
         # end
 
         # * return results
-        (; aname => (; tjulia = ta, tpython = tb))# valjulia = aval,  valpython = bval))
+        (; aname => (; tjulia = ta, tpython = tb)) # valjulia = aval,  valpython = bval))
     end
     valtimes = Dict(only(keys(t)) => only(values(t)) for t in valtimes)
     # end
@@ -137,7 +137,7 @@ begin # * Show features that are slower
     slowidxs = findall(toldelta .> 0)
     for idx in slowidxs
         aname = anames[idx]
-        @info "$aname slower in Julia ($(round(tjulia[idx], sigdigits=3))s vs $(round(tpython[idx], sigdigits=3))s)"
+        @info "$aname slower in Julia ($(round(tjulia[idx], sigdigits = 3))s vs $(round(tpython[idx], sigdigits = 3))s)"
     end
     @warn "Julia slower on $(length(slowidxs)) features out of $(length(anames))"
     @warn "Julia faster on $(length(anames) - length(findall(toldelta .> 0))) features out of $(length(anames))"

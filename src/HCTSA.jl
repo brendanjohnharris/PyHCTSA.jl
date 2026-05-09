@@ -55,15 +55,17 @@ function __init__()
     # * Set PYTHON_LOG_LEVEL in preferences or ENV before loading
 
     # * Build default feature set after Python modules are initialized
-    global hctsa = build_ops()
+    return global hctsa = build_ops()
 end
 
 @reexport using TimeseriesFeatures
 
 function py2dict(pd::Py)
     if pyisinstance(pd, pybuiltins.dict)
-        return Dict(PythonCall.pyconvert(String, k) => py2dict(v)
-                    for (k, v) in pd.items())
+        return Dict(
+            PythonCall.pyconvert(String, k) => py2dict(v)
+                for (k, v) in pd.items()
+        )
     elseif pyisinstance(pd, pybuiltins.list)
         return [py2dict(item) for item in pd]
     else
@@ -76,8 +78,8 @@ py2dict(x) = x
 
 function _metadata_dependencies(mop::Dict)
     deps = haskey(mop, "dependencies") ?
-           get(mop, "dependencies", String[]) :
-           get(mop, "depedencies", String[])
+        get(mop, "dependencies", String[]) :
+        get(mop, "depedencies", String[])
     if isnothing(deps)
         return String[]
     elseif deps isa AbstractVector
@@ -90,7 +92,7 @@ function _metadata_dependencies(mop::Dict)
 end
 
 function description(mop::Dict)
-    md = Dict{String,Any}()
+    md = Dict{String, Any}()
     haskey(mop, "base_name") && (md["base_name"] = String(mop["base_name"]))
     if haskey(mop, "legacy_name") && !isnothing(mop["legacy_name"])
         md["legacy_name"] = String(mop["legacy_name"])
@@ -109,21 +111,25 @@ end
 _keystring(k) = k isa AbstractString ? String(k) : string(k)
 
 function normalize_config(x::AbstractVector)
-    pylist(x)
+    return pylist(x)
 end
 normalize_config(x) = identity(x)
 function mop_func(module_name::String, func_name::String, config::Dict)
     config = filter(p -> _keystring(p.first) ∉ PREPROCESS_CONFIG_KEYS, config)
-    config = [Symbol(k) => normalize_config(v)
-              for (k, v) in config if _keystring(k) ∉ PREPROCESS_CONFIG_KEYS]
+    config = [
+        Symbol(k) => normalize_config(v)
+            for (k, v) in config if _keystring(k) ∉ PREPROCESS_CONFIG_KEYS
+    ]
     op_module = getproperty(HCTSA.pyOperations, module_name)
     op_func = getproperty(op_module, func_name)
-    function f(x)
+    return function f(x)
         try
             return PythonCall.GIL.@lock op_func(x; config...)
         catch e
-            @debug "Error computing feature $module_name:$func_name" exception = (e,
-                catch_backtrace())
+            @debug "Error computing feature $module_name:$func_name" exception = (
+                e,
+                catch_backtrace(),
+            )
             return e
         end
     end
@@ -137,7 +143,7 @@ function name(mop::Dict)
 end
 iszscore(config::Dict) = haskey(config, "zscore") && config["zscore"] == true
 function isabs(config::Dict)
-    haskey(config, "abs") && config["abs"] == true
+    return haskey(config, "abs") && config["abs"] == true
 end
 iszscore(x) = false
 isabs(x) = false
@@ -161,7 +167,7 @@ function flatten_config(config::Dict)
     # Wrap scalars in a vector, keep vectors as-is
     values = [v isa Vector ? v : [v] for v in [config[k] for k in keys]]
     # Cartesian product of all value combinations
-    (Dict(zip(keys, combo)) for combo in Iterators.product(values...))
+    return (Dict(zip(keys, combo)) for combo in Iterators.product(values...))
 end
 
 """
@@ -174,11 +180,11 @@ Format a parameter value for use in feature labels, matching pyhctsa's _format_p
 - Other floats use 'p' for decimal point (e.g., 1.5 -> "1p5")
 - Lists show as "start_end" if contiguous range, else joined with "_"
 """
-function format_param_value(val::Bool, key::Union{Nothing,String}=nothing)
+function format_param_value(val::Bool, key::Union{Nothing, String} = nothing)
     return val ? (isnothing(key) ? "" : key) : ""
 end
 
-function format_param_value(val::Number, key::Union{Nothing,String}=nothing)
+function format_param_value(val::Number, key::Union{Nothing, String} = nothing)
     if val < 0
         return "m" * format_param_value(-val)
     elseif val == floor(val)
@@ -193,7 +199,7 @@ function format_param_value(val::Number, key::Union{Nothing,String}=nothing)
     end
 end
 
-function format_param_value(val::AbstractVector, key::Union{Nothing,String}=nothing)
+function format_param_value(val::AbstractVector, key::Union{Nothing, String} = nothing)
     # Check if contiguous integer range
     if length(val) > 1 && all(x -> x isa Number, val)
         diffs = diff(val)
@@ -204,7 +210,7 @@ function format_param_value(val::AbstractVector, key::Union{Nothing,String}=noth
     return join(format_param_value.(val), "_")
 end
 
-format_param_value(val, key::Union{Nothing,String}=nothing) = string(val)
+format_param_value(val, key::Union{Nothing, String} = nothing) = string(val)
 
 """
     name_config(config::Dict, mopconfig::Dict; do_zscore::Bool=true, do_absval::Bool=false)
@@ -213,15 +219,17 @@ Generate the parameter suffix for a feature name, matching pyhctsa's naming conv
 If ordered_args is provided, parameters are ordered accordingly.
 Excludes preprocessing keys from the name.
 """
-function name_config(config::Dict, mopconfig::Dict; do_zscore::Bool=true,
-    do_absval::Bool=false)
+function name_config(
+        config::Dict, mopconfig::Dict; do_zscore::Bool = true,
+        do_absval::Bool = false
+    )
     # Filter out preprocessing keys
     params = filter(p -> _keystring(p.first) ∉ PREPROCESS_CONFIG_KEYS, config)
     params_by_string = Dict(_keystring(k) => v for (k, v) in params)
     parts = String[]
 
     if haskey(mopconfig, "ordered_args") && !isnothing(mopconfig["ordered_args"]) &&
-       !isempty(mopconfig["ordered_args"])
+            !isempty(mopconfig["ordered_args"])
         # Use ordered_args to determine parameter order
         for arg in mopconfig["ordered_args"]
             arg_str = _keystring(arg)
@@ -259,24 +267,32 @@ function name_config(config::Dict, mopconfig::Dict; do_zscore::Bool=true,
     return label_suffix
 end
 
-as_numpy(x) = Py(collect(x)).to_numpy(; copy=false)
+as_numpy(x) = Py(collect(x)).to_numpy(; copy = false)
 
 # * Preprocessing features
 using Statistics
 z_score(𝐱::AbstractVector) = (𝐱 .- mean(𝐱)) ./ (std(𝐱))
 zz_score(𝐱::AbstractVector) = (z_score ∘ z_score)(𝐱)
-const numpy_identity = Feature(as_numpy ∘ Identity, :numpy_identity,
-    "𝐱 → 𝐱", ["normalization"])
-const numpy_zscore = Feature(as_numpy ∘ zz_score, :numpy_zscore,
+const numpy_identity = Feature(
+    as_numpy ∘ Identity, :numpy_identity,
+    "𝐱 → 𝐱", ["normalization"]
+)
+const numpy_zscore = Feature(
+    as_numpy ∘ zz_score, :numpy_zscore,
     "𝐱 → (𝐱 - μ(𝐱))/σ(𝐱)",
-    ["normalization"])
-const numpy_abs = Feature(as_numpy ∘ Base.BroadcastFunction(abs), :abs, "𝐱 → |𝐱|",
-    ["normalization"])
-const numpy_abs_zscore = Feature(as_numpy ∘ Base.BroadcastFunction(abs) ∘
-                                 zz_score,
+    ["normalization"]
+)
+const numpy_abs = Feature(
+    as_numpy ∘ Base.BroadcastFunction(abs), :abs, "𝐱 → |𝐱|",
+    ["normalization"]
+)
+const numpy_abs_zscore = Feature(
+    as_numpy ∘ Base.BroadcastFunction(abs) ∘
+        zz_score,
     :numpy_abs_zscore,
     "𝐱 → |(𝐱 - μ(𝐱))/σ(𝐱)|",
-    ["normalization"])
+    ["normalization"]
+)
 
 function java_filter(ops)
     copystacks = get(ENV, "JULIA_COPY_STACKS", 0)
@@ -326,23 +342,27 @@ function build_mops(module_name::String, func_name::String, mopconfig::Dict)
         pop!(config, "zscore", nothing)
         pop!(config, "abs", nothing)
         fullname = name(mopconfig) *
-                   name_config(config, mopconfig; do_zscore=do_zscore,
-            do_absval=do_absval)
-        SuperFeature(mop_func(module_name, func_name, config), Symbol(fullname),
+            name_config(
+            config, mopconfig; do_zscore = do_zscore,
+            do_absval = do_absval
+        )
+        SuperFeature(
+            mop_func(module_name, func_name, config), Symbol(fullname),
             description(mopconfig),
-            keywords(mopconfig), Feature(super))
+            keywords(mopconfig), Feature(super)
+        )
     end
-    mops = features |> SuperFeatureSet |> java_filter
+    return mops = features |> SuperFeatureSet |> java_filter
 end
 
 function build_mops(module_name::String, mopconfigs::Dict)
-    map(collect(mopconfigs)) do (func_name, mopconfig)
+    return map(collect(mopconfigs)) do (func_name, mopconfig)
         build_mops(module_name, func_name, mopconfig)
     end |> Iterators.flatten |> collect |> SuperFeatureSet
 end
 
 function build_mops(mopconfigs::Dict)
-    map(collect(mopconfigs)) do (module_name, module_configs)
+    return map(collect(mopconfigs)) do (module_name, module_configs)
         build_mops(module_name, module_configs)
     end |> Iterators.flatten |> collect |> SuperFeatureSet
 end
@@ -355,7 +375,7 @@ function _default_config_path()
     return cfg_path
 end
 
-function load_config(path=nothing)
+function load_config(path = nothing)
     if isnothing(path)
         path = _default_config_path()
     end
@@ -364,21 +384,23 @@ function load_config(path=nothing)
 end
 function build_mops(module_name::String, args...)
     config = load_config(args...)
-    build_mops(module_name, config[module_name])
+    return build_mops(module_name, config[module_name])
 end
 function build_mops()
     config = load_config()
-    build_mops(config)
+    return build_mops(config)
 end
 
-function convert_op(mopval, mopname="")
+function convert_op(mopval, mopname = "")
     if pyhasattr(mopval, "ndim") && pyhasattr(mopval, "size") && pyhasattr(mopval, "item")
         mopval = mopval.item()
     end
 
     if pyisinstance(mopval, pybuiltins.Exception)
-        @debug "Feature $mopname returned a Python exception" exception = (mopval,
-            catch_backtrace())
+        @debug "Feature $mopname returned a Python exception" exception = (
+            mopval,
+            catch_backtrace(),
+        )
         return NaN
     elseif pyisinstance(mopval, pybuiltins.str)
         msg = try
@@ -394,14 +416,16 @@ function convert_op(mopval, mopname="")
         try
             return pyconvert(Float64, mopval)
         catch e
-            @debug "Failed to convert $mopname feature output to Float64. This probably means the `mopops.json` has incorrect fields for this mop:" exception = (e,
-                catch_backtrace())
+            @debug "Failed to convert $mopname feature output to Float64. This probably means the `mopops.json` has incorrect fields for this mop:" exception = (
+                e,
+                catch_backtrace(),
+            )
             @debug mopval
             return NaN
         end
     end
 end
-function convert_op(E::PyException, mopname="")
+function convert_op(E::PyException, mopname = "")
     @debug "PyException in feature $mopname" exception = (E, catch_backtrace())
     return NaN
 end
@@ -416,8 +440,10 @@ end
 
 function get_op(mopval, opname, mop)
     if mopval isa PyException || pyisinstance(mopval, pybuiltins.Exception)
-        @debug "Feature $(getname(mop)).$opname returned an exception when extracting dict key" exception = (mopval,
-            catch_backtrace())
+        @debug "Feature $(getname(mop)).$opname returned an exception when extracting dict key" exception = (
+            mopval,
+            catch_backtrace(),
+        )
         return NaN
     elseif pyisinstance(mopval, pybuiltins.dict)
         if haskey(mopval, opname)
@@ -440,7 +466,7 @@ end
 get_op(opname, mop) = mopval -> get_op(mopval, opname, mop)
 
 function mop_quality(y)
-    Q = map(y) do mopval
+    return Q = map(y) do mopval
         if mopval isa PyException || pyisinstance(mopval, pybuiltins.Exception)
             return false
         elseif pyisinstance(mopval, pybuiltins.str)
@@ -457,10 +483,12 @@ function mop_quality(y)
     end
 end
 
-function cache_mopops(mops=build_mops(),
-    path=joinpath(@__DIR__, "../assets/mopops.json"))
+function cache_mopops(
+        mops = build_mops(),
+        path = joinpath(@__DIR__, "../assets/mopops.json")
+    )
     x = rand(5000)
-    y = mops(x, Union{Py,PyException})
+    y = mops(x, Union{Py, PyException})
     Q1 = mop_quality(y)
     mopops = map(y) do mopval
         if mopval isa PyException || pyisinstance(mopval, pybuiltins.Exception)
@@ -473,7 +501,7 @@ function cache_mopops(mops=build_mops(),
     end
 
     x = testdata(:test)
-    y = mops(x, Union{Py,PyException})
+    y = mops(x, Union{Py, PyException})
     Q2 = mop_quality(y)
     test_mopops = map(y) do mopval
         if mopval isa PyException || pyisinstance(mopval, pybuiltins.Exception)
@@ -507,35 +535,42 @@ function cache_mopops(mops=build_mops(),
     end
     return mopops, Q
 end
-function load_mopops(path=joinpath(@__DIR__, "../assets/mopops.json"))
-    open(path, "r") do io
+function load_mopops(path = joinpath(@__DIR__, "../assets/mopops.json"))
+    return open(path, "r") do io
         mopops = JSON.parse(read(io, String))
         return mopops
     end
 end
 
-function build_ops(mops=build_mops(), mopops=load_mopops())
+function build_ops(mops = build_mops(), mopops = load_mopops())
     return map(mops |> collect) do mop
-               description = getdescription(mop)
-               keywords = getkeywords(mop)
-               name = getname(mop)
-               #    base_name = JSON.parse(getdescription(mop))["base_name"]
-               opnames = get(mopops, String(getname(mop)), String[])
-               if isempty(opnames)
-                   return [
-                       SuperFeature(x -> convert_op(((getmethod ∘ getfeature)(mop))(x),
-                               name), name,
-                           description,
-                           keywords, getsuper(mop))]
-                   #    return [SuperFeature(convert_op, name, description, keywords, mop)]
-               else
-                   return map(opnames) do opname
-                       SuperFeature(get_op(opname, mop),
-                           Symbol("$(name).$opname"),
-                           description, keywords, mop)
-                   end
-               end
-           end |> Iterators.flatten |> collect |> Vector{SuperFeature} |> SuperFeatureSet
+        description = getdescription(mop)
+        keywords = getkeywords(mop)
+        name = getname(mop)
+        #    base_name = JSON.parse(getdescription(mop))["base_name"]
+        opnames = get(mopops, String(getname(mop)), String[])
+        if isempty(opnames)
+            return [
+                SuperFeature(
+                    x -> convert_op(
+                        ((getmethod ∘ getfeature)(mop))(x),
+                        name
+                    ), name,
+                    description,
+                    keywords, getsuper(mop)
+                ),
+            ]
+            #    return [SuperFeature(convert_op, name, description, keywords, mop)]
+        else
+            return map(opnames) do opname
+                SuperFeature(
+                    get_op(opname, mop),
+                    Symbol("$(name).$opname"),
+                    description, keywords, mop
+                )
+            end
+        end
+    end |> Iterators.flatten |> collect |> Vector{SuperFeature} |> SuperFeatureSet
 end
 
 include("Artifacts.jl")
