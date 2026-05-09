@@ -1,8 +1,8 @@
-name: Check
+name: Runic
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
       - 'release-'
     tags:
       - '*'
