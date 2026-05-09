@@ -26,7 +26,7 @@ TimeseriesFeatures = {rev = "main", url = "https://github.com/brendanjohnharris/
 [compat]
 DimensionalData = "0.26 - 0.30"
 JSON = "1.3.0"
-MoreMaps = "0.2.1"
+MoreMaps = "0.2, 0.3"
 Preferences = "1.5.2"
 PythonCall = "0.9"
 Reexport = "1"
