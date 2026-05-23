@@ -1,3 +1,4 @@
 [pip.deps]
-pyhctsa = ">=0.1.2"
+pyhctsa = "@git+https://github.com/dynamicsandneuralsystems/pyhctsa/@main"
+# pyhctsa = ">=0.1.3"
 
