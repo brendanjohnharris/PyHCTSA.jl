@@ -45,6 +45,16 @@ jobs:
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
+      - name: Debug CondaPkg (Windows)
+        if: runner.os == 'Windows'
+        shell: julia --color=yes --project=. {0}
+        run: |
+          using CondaPkg
+          @info "Resolving CondaPkg"
+          CondaPkg.resolve()
+          CondaPkg.status()
+          @info "Python path" CondaPkg.which("python")
+          run(`cmd /c "echo %PATH%"`)
       - uses: julia-actions/julia-runtest@v1
         env:
           JULIA_COPY_STACKS: "1"
