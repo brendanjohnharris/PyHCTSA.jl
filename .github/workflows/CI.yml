@@ -49,6 +49,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: julia --color=yes --project=. {0}
         run: |
+          import Pkg
+          Pkg.add("CondaPkg")
           using CondaPkg
           @info "Resolving CondaPkg"
           CondaPkg.resolve()
