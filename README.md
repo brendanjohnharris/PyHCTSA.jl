@@ -11,7 +11,7 @@ using Pkg
 Pkg.add("HCTSA")
 using HCTSA
 ```
-To enable java-dependent features, set the environment variable `JULIA_COPY_STACKS=1` before launching Julia.
+To enable java-dependent features on Mac and Linux, set the environment variable `JULIA_COPY_STACKS=1` before launching Julia. DO NOT do this on Windows, as it will cause crashes.
 
 ## Quick Start
 ```julia
