@@ -1,4 +1,4 @@
-name = "HCTSA"
+name = "PyHCTSA"
 uuid = "4f3a0022-ff71-4cd2-bcdc-9e43a2820929"
 version = "0.1.0"
 authors = ["Brendan Harris <bhar9988@uni.sydney.edu.au> and contributors"]

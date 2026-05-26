@@ -5,17 +5,17 @@ exec julia -t auto --startup-file=no --color=yes "${BASH_SOURCE[0]}" "$@"
 =#
 using Pkg
 Pkg.activate(@__DIR__)
-using HCTSA
+using PyHCTSA
 using Distributed
 using MoreMaps
 
 begin
     addprocs(8)
-    @everywhere using HCTSA, MoreMaps
+    @everywhere using PyHCTSA, MoreMaps
 end
 begin
-    ops = HCTSA.build_ops()
-    pops = HCTSA.calculator.FeatureCalculator()
+    ops = PyHCTSA.build_ops()
+    pops = PyHCTSA.calculator.FeatureCalculator()
 
     X = randn(100, 8)
     a = @timed ops(X; chart = Chart(Pmap()))

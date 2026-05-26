@@ -5,13 +5,13 @@ exec julia -t auto --color=no --startup-file=no "${BASH_SOURCE[0]}" "$@"
 =#
 using Pkg
 Pkg.activate(@__DIR__)
-using HCTSA
+using PyHCTSA
 using BenchmarkTools
 
-hctsa = HCTSA.build_ops()
-pyhctsa = HCTSA.calculator.FeatureCalculator()
-x = HCTSA.testdata(:test)
-y = HCTSA.as_numpy(x)
+hctsa = PyHCTSA.build_ops()
+pyhctsa = PyHCTSA.calculator.FeatureCalculator()
+x = PyHCTSA.testdata(:test)
+y = PyHCTSA.as_numpy(x)
 
 @info "Timing Julia implementation..."
 a = @benchmark $hctsa($x) samples = 10 seconds = 120 evals = 1

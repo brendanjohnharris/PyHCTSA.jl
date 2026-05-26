@@ -1,9 +1,9 @@
-using HCTSA
+using PyHCTSA
 using JSON
 using PythonCall
 
 begin
-    mops = HCTSA.build_mops()
+    mops = PyHCTSA.build_mops()
     x = rand(5000)
     F = @time mops(x, Union{Py, PyException})
     idxs = map(Base.Fix2(isa, PyException), F)
@@ -12,24 +12,24 @@ end
 
 begin
     X = randn(1000, 20)
-    Operations = HCTSA.build_ops()
+    Operations = PyHCTSA.build_ops()
     @time Operations(X)
 end
 
 begin
-    fs = HCTSA.calculator.FeatureCalculator()
-    a = @time fs.extract(HCTSA.as_numpy(X'))
+    fs = PyHCTSA.calculator.FeatureCalculator()
+    a = @time fs.extract(PyHCTSA.as_numpy(X'))
     a = pyconvert(Array{Float64}, a.values)
 end
 
 begin # ! How to generate ops from mops?
-    ops = HCTSA.Operations
+    ops = PyHCTSA.Operations
     Y = ops(rand(2000))
 end
 
 begin
     function convert_op(mopval)
-        if pyisinstance(mopval, HCTSA.numpy.ndarray)
+        if pyisinstance(mopval, PyHCTSA.numpy.ndarray)
             return pyconvert(Float64, mopval |> only)
         elseif pyisinstance(mopval, pybuiltins.Exception)
             @warn exception = (mopval, catch_backtrace())
@@ -52,7 +52,7 @@ begin
     end
     get_op(opname, mop) = mopval -> get_op(mopval, opname, mop)
 
-    mopops = HCTSA.load_mopops()
+    mopops = PyHCTSA.load_mopops()
     ops = map(mops |> collect) do mop
         description = getdescription(mop)
         keywords = getkeywords(mop)
@@ -77,7 +77,7 @@ end
 
 # begin
 #     function convert_op(mopval)
-#         if pyisinstance(mopval, HCTSA.numpy.ndarray)
+#         if pyisinstance(mopval, PyHCTSA.numpy.ndarray)
 #             return pyconvert(Float64, mopval |> only)
 #         elseif pyisinstance(mopval, pybuiltins.Exception)
 #             @warn exception = (mopval, catch_backtrace())
@@ -100,7 +100,7 @@ end
 #     end
 #     get_op(opname, mop) = mopval -> get_op(mopval, opname, mop)
 
-#     mopops = HCTSA.load_mopops()
+#     mopops = PyHCTSA.load_mopops()
 #     ops = map(mops |> collect) do mop
 #               description = getdescription(mop)
 #               keywords = getkeywords(mop)
@@ -120,10 +120,10 @@ end
 #           end |> Iterators.Flatten |> collect |> FeatureSet
 #     Y = ops(rand(2000))
 # end
-# f = HCTSA.calculator.FeatureCalculator()
+# f = PyHCTSA.calculator.FeatureCalculator()
 
-# config = f.config |> HCTSA.py2dict
-# feature_funcs = f.feature_funcs |> HCTSA.py2dict
+# config = f.config |> PyHCTSA.py2dict
+# feature_funcs = f.feature_funcs |> PyHCTSA.py2dict
 
 # * Now we get each 'Master Operation' from the config, extract the func from feature_funcs,
 #   and build a Feature. If the config says zscore, we use a SuperFeature with the zscore

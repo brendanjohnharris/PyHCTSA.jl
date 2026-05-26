@@ -5,11 +5,11 @@ exec julia -t auto --startup-file=no --color=yes "${BASH_SOURCE[0]}" "$@"
 =#
 using Pkg
 Pkg.activate(normpath(joinpath(@__DIR__, "..")))
-using HCTSA
+using PyHCTSA
 using TimeseriesFeatures
 using Printf
 
-mops = HCTSA.build_mops()
+mops = PyHCTSA.build_mops()
 x = randn(10000)
 
 # Warm up the Python side so JIT/import overhead doesn't pollute the first mop's time.

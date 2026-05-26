@@ -5,7 +5,7 @@ using TestItemRunner
 @run_package_tests
 
 @testsnippet Setup begin
-    using HCTSA
+    using PyHCTSA
     using JSON
     using PythonCall
     using TimeseriesFeatures
@@ -29,14 +29,14 @@ using TestItemRunner
 end
 
 @testitem "pyhctsa config loads" setup = [Setup] begin
-    config = HCTSA.load_config()
+    config = PyHCTSA.load_config()
     @test config isa Dict
     @test !isempty(config)
     @test haskey(config, "distribution")
 end
 
 @testitem "build_mops" setup = [Setup] begin
-    mops = HCTSA.build_mops("distribution")
+    mops = PyHCTSA.build_mops("distribution")
     @test length(mops) > 0
 
     x = randn(1024)
@@ -45,17 +45,17 @@ end
 end
 
 @testitem "build_ops from cached mop outputs" setup = [Setup] begin
-    all_mops = HCTSA.build_mops("distribution")
+    all_mops = PyHCTSA.build_mops("distribution")
     n = min(12, length(all_mops))
     subset = SuperFeatureSet(collect(all_mops)[1:n])
 
     tmp, io = mktemp()
     close(io)
-    mopops, Q = HCTSA.cache_mopops(subset, tmp)
+    mopops, Q = PyHCTSA.cache_mopops(subset, tmp)
     @test mopops isa Dict
     @test length(mopops) == n
 
-    ops = HCTSA.build_ops(subset, mopops)
+    ops = PyHCTSA.build_ops(subset, mopops)
     @test length(ops) >= n
 
     out = ops(randn(1024))
@@ -63,7 +63,7 @@ end
 end
 
 @testitem "metadata normalization" setup = [Setup] begin
-    d = HCTSA.description(
+    d = PyHCTSA.description(
         Dict(
             "base_name" => "foo",
             "legacy_name" => "bar",
@@ -84,7 +84,7 @@ end
     inner["c"] = "x"
     pd["inner"] = inner
 
-    d = HCTSA.py2dict(pd)
+    d = PyHCTSA.py2dict(pd)
     @test d isa Dict
     @test d["a"] == 1
     @test d["b"] == [2, 3]
@@ -93,7 +93,7 @@ end
 
 @testitem "metadata dependency normalization variants" setup = [Setup] begin
     d1 = JSON.parse(
-        HCTSA.description(
+        PyHCTSA.description(
             Dict(
                 "base_name" => "f",
                 "dependencies" => ["a", "b"]
@@ -102,11 +102,11 @@ end
     )
     @test d1["dependencies"] == ["a", "b"]
 
-    d2 = JSON.parse(HCTSA.description(Dict("base_name" => "f", "depedencies" => ["jpype1"])))
+    d2 = JSON.parse(PyHCTSA.description(Dict("base_name" => "f", "depedencies" => ["jpype1"])))
     @test d2["dependencies"] == ["jpype1"]
 
     d3 = JSON.parse(
-        HCTSA.description(
+        PyHCTSA.description(
             Dict(
                 "base_name" => "f",
                 "dependencies" => "statsmodels"
@@ -115,54 +115,54 @@ end
     )
     @test d3["dependencies"] == ["statsmodels"]
 
-    d4 = JSON.parse(HCTSA.description(Dict("base_name" => "f", "dependencies" => nothing)))
+    d4 = JSON.parse(PyHCTSA.description(Dict("base_name" => "f", "dependencies" => nothing)))
     @test d4["dependencies"] == String[]
 end
 
 @testitem "keywords returns labels or empty" setup = [Setup] begin
-    @test HCTSA.keywords(Dict("labels" => ["distribution", "location"])) ==
+    @test PyHCTSA.keywords(Dict("labels" => ["distribution", "location"])) ==
         ["distribution", "location"]
-    @test HCTSA.keywords(Dict("labels" => "not-a-vector")) == String[]
-    @test HCTSA.keywords(Dict("base_name" => "x")) == String[]
+    @test PyHCTSA.keywords(Dict("labels" => "not-a-vector")) == String[]
+    @test PyHCTSA.keywords(Dict("base_name" => "x")) == String[]
 end
 
 @testitem "name throws without base_name" setup = [Setup] begin
-    @test_throws ArgumentError HCTSA.name(Dict("legacy_name" => "x"))
+    @test_throws ArgumentError PyHCTSA.name(Dict("legacy_name" => "x"))
 end
 
 @testitem "flatten_config cartesian product" setup = [Setup] begin
     cfg = Dict("d" => [1.0, 0.5], "D" => [3, 5], "zscore" => true)
-    flat = collect(HCTSA.flatten_config(cfg))
+    flat = collect(PyHCTSA.flatten_config(cfg))
     @test length(flat) == 4
     @test all(haskey.(flat, Ref("d")))
     @test all(haskey.(flat, Ref("D")))
     @test all(haskey.(flat, Ref("zscore")))
 
     scalar_cfg = Dict("tau" => 1, "zscore" => true)
-    scalar_flat = collect(HCTSA.flatten_config(scalar_cfg))
+    scalar_flat = collect(PyHCTSA.flatten_config(scalar_cfg))
     @test length(scalar_flat) == 1
     @test scalar_flat[1]["tau"] == 1
 end
 
 @testitem "format_param_value semantics" setup = [Setup] begin
-    @test HCTSA.format_param_value(true, "zscore") == "zscore"
-    @test HCTSA.format_param_value(false, "zscore") == ""
-    @test HCTSA.format_param_value(-1) == "m1"
-    @test HCTSA.format_param_value(0.5) == "0p5"
-    @test HCTSA.format_param_value(2.75) == "2p75"
-    @test HCTSA.format_param_value([1, 2, 3]) == "1_to_3"
-    @test HCTSA.format_param_value([1, 3, 5]) == "1_3_5"
+    @test PyHCTSA.format_param_value(true, "zscore") == "zscore"
+    @test PyHCTSA.format_param_value(false, "zscore") == ""
+    @test PyHCTSA.format_param_value(-1) == "m1"
+    @test PyHCTSA.format_param_value(0.5) == "0p5"
+    @test PyHCTSA.format_param_value(2.75) == "2p75"
+    @test PyHCTSA.format_param_value([1, 2, 3]) == "1_to_3"
+    @test PyHCTSA.format_param_value([1, 3, 5]) == "1_3_5"
 end
 
 @testitem "name_config ordered and unordered modes" setup = [Setup] begin
     ordered_cfg = Dict("d" => 0.5, "D" => 3, "zscore" => true, "abs" => false)
     mopcfg_ordered = Dict("ordered_args" => ["d", "D"], "base_name" => "pol_var")
-    s1 = HCTSA.name_config(ordered_cfg, mopcfg_ordered; do_zscore = true, do_absval = false)
+    s1 = PyHCTSA.name_config(ordered_cfg, mopcfg_ordered; do_zscore = true, do_absval = false)
     @test s1 == "_0p5_3"
 
     unordered_cfg = Dict("tau" => 3, "what_method" => "ols", "zscore" => false)
     mopcfg_unordered = Dict("base_name" => "partial_autocorr")
-    s2 = HCTSA.name_config(
+    s2 = PyHCTSA.name_config(
         unordered_cfg, mopcfg_unordered; do_zscore = false,
         do_absval = true
     )
@@ -173,80 +173,80 @@ end
 end
 
 @testitem "zscore and abs flags" setup = [Setup] begin
-    @test HCTSA.iszscore(Dict("zscore" => true))
-    @test !HCTSA.iszscore(Dict("zscore" => false))
-    @test !HCTSA.iszscore("not-a-dict")
+    @test PyHCTSA.iszscore(Dict("zscore" => true))
+    @test !PyHCTSA.iszscore(Dict("zscore" => false))
+    @test !PyHCTSA.iszscore("not-a-dict")
 
-    @test HCTSA.isabs(Dict("abs" => true))
-    @test !HCTSA.isabs(Dict("abs" => false))
-    @test !HCTSA.isabs(1)
+    @test PyHCTSA.isabs(Dict("abs" => true))
+    @test !PyHCTSA.isabs(Dict("abs" => false))
+    @test !PyHCTSA.isabs(1)
 end
 
 @testitem "default config path resolves" setup = [Setup] begin
-    cfg_path = HCTSA._default_config_path()
+    cfg_path = PyHCTSA._default_config_path()
     @test isfile(cfg_path)
 
-    cfg = HCTSA.load_config(cfg_path)
+    cfg = PyHCTSA.load_config(cfg_path)
     @test cfg isa Dict
     @test !isempty(cfg)
 end
 
 @testitem "build_mops overload consistency" setup = [Setup] begin
-    config = HCTSA.load_config()
+    config = PyHCTSA.load_config()
     module_name, func_name = first_config_entry(config)
     mopconfig = config[module_name][func_name]
 
-    by_triplet = HCTSA.build_mops(module_name, func_name, mopconfig)
-    by_module_dict = HCTSA.build_mops(module_name, Dict(func_name => mopconfig))
+    by_triplet = PyHCTSA.build_mops(module_name, func_name, mopconfig)
+    by_module_dict = PyHCTSA.build_mops(module_name, Dict(func_name => mopconfig))
 
     @test length(by_triplet) > 0
     @test length(by_triplet) == length(by_module_dict)
 end
 
 @testitem "convert_op and get_op behavior" setup = [Setup] begin
-    mops = HCTSA.build_mops("distribution")
+    mops = PyHCTSA.build_mops("distribution")
     mop = collect(mops)[1]
 
-    @test HCTSA.convert_op(1) == 1.0
-    @test HCTSA.convert_op(1.25) == 1.25
-    @test isnan(HCTSA.convert_op(Py("bad-output"), "bad-output"))
+    @test PyHCTSA.convert_op(1) == 1.0
+    @test PyHCTSA.convert_op(1.25) == 1.25
+    @test isnan(PyHCTSA.convert_op(Py("bad-output"), "bad-output"))
 
     d1 = PythonCall.pydict()
     d1["answer"] = 4.0
-    @test HCTSA.get_op(d1, "answer", mop) == 4.0
+    @test PyHCTSA.get_op(d1, "answer", mop) == 4.0
 
     d2 = PythonCall.pydict()
     d2["out"] = 5.0
-    @test HCTSA.get_op(d2, "missing", mop) == 5.0
+    @test PyHCTSA.get_op(d2, "missing", mop) == 5.0
 
     d3 = PythonCall.pydict()
     d3["other"] = 6.0
-    @test isnan(HCTSA.get_op(d3, "missing", mop))
+    @test isnan(PyHCTSA.get_op(d3, "missing", mop))
 end
 
 @testitem "mop_quality classification" setup = [Setup] begin
     d = PythonCall.pydict()
     d["x"] = 1
     vals = Any[1.0, Py(2), Py("bad"), d]
-    q = HCTSA.mop_quality(vals)
+    q = PyHCTSA.mop_quality(vals)
     @test q == [true, true, false, true]
 end
 
 @testitem "java_filter handles env parsing" setup = [Setup] begin
-    config = HCTSA.load_config()
+    config = PyHCTSA.load_config()
     @test haskey(config, "correlation")
     @test haskey(config["correlation"], "add_noise")
 
     old = get(ENV, "JULIA_COPY_STACKS", nothing)
     try
         ENV["JULIA_COPY_STACKS"] = "0"
-        filtered = HCTSA.build_mops(
+        filtered = PyHCTSA.build_mops(
             "correlation", "add_noise",
             config["correlation"]["add_noise"]
         )
 
         ENV["JULIA_COPY_STACKS"] = "1"
-        unfiltered = HCTSA.build_mops(
+        unfiltered = PyHCTSA.build_mops(
             "correlation", "add_noise",
             config["correlation"]["add_noise"]
         )
@@ -263,32 +263,32 @@ end
 end
 
 @testitem "cache_mopops and load_mopops round-trip" setup = [Setup] begin
-    all_mops = HCTSA.build_mops("distribution")
+    all_mops = PyHCTSA.build_mops("distribution")
     subset = first_subset(all_mops, 8)
 
     tmp, io = mktemp()
     close(io)
 
-    mopops, Q = HCTSA.cache_mopops(subset, tmp)
+    mopops, Q = PyHCTSA.cache_mopops(subset, tmp)
     @test mopops isa Dict
     @test length(mopops) == length(subset)
     @test Q isa AbstractVector{Bool}
     @test length(Q) == length(subset)
 
-    loaded = HCTSA.load_mopops(tmp)
+    loaded = PyHCTSA.load_mopops(tmp)
     @test loaded isa JSON.Object
     @test sort(string.(keys(loaded))) == sort(string.(keys(mopops)))
 end
 
 @testitem "build_ops works with subset and mopops" setup = [Setup] begin
-    all_mops = HCTSA.build_mops("distribution")
+    all_mops = PyHCTSA.build_mops("distribution")
     subset = first_subset(all_mops, 10)
 
     tmp, io = mktemp()
     close(io)
-    mopops, _ = HCTSA.cache_mopops(subset, tmp)
+    mopops, _ = PyHCTSA.cache_mopops(subset, tmp)
 
-    ops = HCTSA.build_ops(subset, mopops)
+    ops = PyHCTSA.build_ops(subset, mopops)
     @test length(ops) >= length(subset)
 
     out_vec = ops(randn(1024))
@@ -299,13 +299,13 @@ end
 end
 
 @testitem "testdata API" setup = [Setup] begin
-    for name in HCTSA.testnames
-        x = HCTSA.testdata(name)
+    for name in PyHCTSA.testnames
+        x = PyHCTSA.testdata(name)
         @test x isa Vector{Float64}
         @test !isempty(x)
     end
 
-    @test_throws ArgumentError HCTSA.testdata(:does_not_exist)
+    @test_throws ArgumentError PyHCTSA.testdata(:does_not_exist)
 end
 
 @testitem "Compare outputs with pyhctsa" setup = [Setup] begin
@@ -314,5 +314,5 @@ end
 
 # @testitem "Cast example" setup=[Setup] begin
 #     using Asciicast
-#     cast_readme(HCTSA)
+#     cast_readme(PyHCTSA)
 # end

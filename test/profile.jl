@@ -5,14 +5,14 @@ exec julia -t auto --startup-file=no --color=yes "${BASH_SOURCE[0]}" "$@"
 =#
 using Pkg
 Pkg.activate(@__DIR__)
-using HCTSA
+using PyHCTSA
 using MoreMaps
 
 begin
-    ops = HCTSA.build_ops()
-    pops = HCTSA.calculator.FeatureCalculator()
+    ops = PyHCTSA.build_ops()
+    pops = PyHCTSA.calculator.FeatureCalculator()
 
-    x = HCTSA.testdata(:test)
+    x = PyHCTSA.testdata(:test)
     ops(x; chart = Chart())
     @profview ops(x; chart = Chart())
 

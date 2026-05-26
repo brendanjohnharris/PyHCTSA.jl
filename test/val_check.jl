@@ -5,32 +5,32 @@ exec julia -t 1 --startup-file=no --color=yes "${BASH_SOURCE[0]}" "$@"
 =#
 # using Pkg
 # Pkg.activate(normpath(joinpath(@__DIR__, "..")))
-using HCTSA
+using PyHCTSA
 using Test
 using Random
 using MoreMaps
 
-ENV["JULIA_DEBUG"] = "HCTSA"   # or "all"
+ENV["JULIA_DEBUG"] = "PyHCTSA"   # or "all"
 
 begin
-    ops = HCTSA.build_ops()
-    pops = HCTSA.calculator.FeatureCalculator()
+    ops = PyHCTSA.build_ops()
+    pops = PyHCTSA.calculator.FeatureCalculator()
 
-    x = HCTSA.testdata(:test)
+    x = PyHCTSA.testdata(:test)
 
     seed = 42
-    pyrandom = HCTSA.PythonCall.pyimport("random")
+    pyrandom = PyHCTSA.PythonCall.pyimport("random")
 
     Random.seed!(42)
-    HCTSA.numpy.random.seed(seed)
+    PyHCTSA.numpy.random.seed(seed)
     pyrandom.seed(seed)
     a = @time ops(x; chart = Chart())
     anames = collect(getnames(a))
 
     Random.seed!(42)
-    HCTSA.numpy.random.seed(seed)
+    PyHCTSA.numpy.random.seed(seed)
     pyrandom.seed(seed)
-    b = @time pops.extract(HCTSA.as_numpy(x))
+    b = @time pops.extract(PyHCTSA.as_numpy(x))
 end
 
 @testset "val_check setup" begin
@@ -39,9 +39,9 @@ end
 end
 
 # begin # * Compare
-#     _bnames = HCTSA.PythonCall.pyconvert(Vector{String}, b.columns)
+#     _bnames = PyHCTSA.PythonCall.pyconvert(Vector{String}, b.columns)
 #     bvals = map(eachindex(_bnames)) do i
-#         HCTSA.convert_op(b.iloc[0, i - 1])
+#         PyHCTSA.convert_op(b.iloc[0, i - 1])
 #     end
 #     bname_idx = Dict{Symbol, Int}(Symbol(name) => i for (i, name) in enumerate(_bnames))
 #     pyidxs = map(anames) do aname
@@ -54,7 +54,7 @@ Q = map(enumerate(anames)) do (i, fname)
     if !haskey(b, string(fname))
         return false
     end
-    _b = HCTSA.convert_op(b[string(fname)], fname)
+    _b = PyHCTSA.convert_op(b[string(fname)], fname)
     if isnan(_a) && isnan(_b)
         return true
     end
@@ -78,9 +78,9 @@ begin # * Notes
 end
 
 begin # * Time feature by feature
-    pyfeature_names = HCTSA.PythonCall.pyconvert(Vector{String}, pops.feature_funcs.keys())
-    pydistribute = HCTSA.PythonCall.pyimport("pyhctsa.distribute")
-    xpy = HCTSA.as_numpy(x)
+    pyfeature_names = PyHCTSA.PythonCall.pyconvert(Vector{String}, pops.feature_funcs.keys())
+    pydistribute = PyHCTSA.PythonCall.pyimport("pyhctsa.distribute")
+    xpy = PyHCTSA.as_numpy(x)
 
     valtimes = map(enumerate(anames[1:1000])) do (i, aname)
         # @info "Timing feature $i / $(length(anames))"
@@ -92,13 +92,13 @@ begin # * Time feature by feature
         begin # * time pyhctsa
             bname = split(string(aname), ".") |> first
 
-            onefuncs = HCTSA.PythonCall.pydict()
+            onefuncs = PyHCTSA.PythonCall.pydict()
             onefuncs[bname] = pops.feature_funcs[bname]
 
             bval, tb = @timed begin
                 row = pydistribute._extract_features_single_series(xpy, onefuncs)
             end
-            # bval = HCTSA.convert_op(row[string(aname)], aname)
+            # bval = PyHCTSA.convert_op(row[string(aname)], aname)
         end
 
         # if !isapprox(aval, bval, rtol = 1e-7, atol = 1e-12)
@@ -150,15 +150,15 @@ end
 # begin # * Quicktest
 #     bname = "spectral_summaries_fft_none"
 
-#     pydistribute = HCTSA.PythonCall.pyimport("pyhctsa.distribute")
+#     pydistribute = PyHCTSA.PythonCall.pyimport("pyhctsa.distribute")
 
-#     onefuncs = HCTSA.PythonCall.pydict()
+#     onefuncs = PyHCTSA.PythonCall.pydict()
 #     onefuncs[bname] = pops.feature_funcs[bname]
 
-#     xpy = HCTSA.as_numpy(x)
+#     xpy = PyHCTSA.as_numpy(x)
 #     row = pydistribute._extract_features_single_series(xpy, onefuncs)
 
-#     mops = HCTSA.build_mops()
+#     mops = PyHCTSA.build_mops()
 #     v = mops[Symbol(bname)](x)
 
 #     display(row)
@@ -167,18 +167,18 @@ end
 #     display(row["$bname.logstd"])
 #     display(v["logstd"])
 
-#     # @assert HCTSA.pyconvert(Number, row[bname]) ≈ HCTSA.pyconvert(Number, v)
+#     # @assert PyHCTSA.pyconvert(Number, row[bname]) ≈ PyHCTSA.pyconvert(Number, v)
 # end
 
 # begin # * Compare julia vs python zscore
-#     y = HCTSA.as_numpy(x)
-#     @benchmark HCTSA.zz_score($x)
-#     @benchmark HCTSA.pyhctsa.utils.z_score($y)
+#     y = PyHCTSA.as_numpy(x)
+#     @benchmark PyHCTSA.zz_score($x)
+#     @benchmark PyHCTSA.pyhctsa.utils.z_score($y)
 #     @benchmark zz_score($x)
 
-#     z1 = HCTSA.zz_score(x)
-#     z2 = HCTSA.pyhctsa.utils.z_score(y)
-#     z2 = HCTSA.pyconvert(Array{Float64}, z2)
+#     z1 = PyHCTSA.zz_score(x)
+#     z2 = PyHCTSA.pyhctsa.utils.z_score(y)
+#     z2 = PyHCTSA.pyconvert(Array{Float64}, z2)
 #     z3 = zz_score(x)
 
 #     @assert z1 ≈ z2 ≈ z3

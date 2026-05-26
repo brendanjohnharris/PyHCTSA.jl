@@ -1,7 +1,7 @@
 using DelimitedFiles
 using Pkg.Artifacts
 
-artifact_toml = joinpath(pkgdir(HCTSA), "Artifacts.toml")
+artifact_toml = joinpath(pkgdir(PyHCTSA), "Artifacts.toml")
 test_hash = artifact_hash("testdata", artifact_toml)
 
 if test_hash == nothing || !artifact_exists(test_hash)

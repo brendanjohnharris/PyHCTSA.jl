@@ -104,7 +104,7 @@ const featurekeywords = fill(["fMRI"], length(featurenames))
 #                            Cint])
 
 """
-    HCTSA.featurekeywords
+    PyHCTSA.featurekeywords
 A vector listing keywords of features as vectors of strings.
 """
 # const featurekeywords = [ # See hctsa

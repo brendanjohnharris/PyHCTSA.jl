@@ -1,17 +1,17 @@
-using HCTSA
+using PyHCTSA
 using Plots
 
-function timeHCTSA(𝒳)
+function timePyHCTSA(𝒳)
     t⃗ = [(@info size(𝐱); @timed catchaMouse16(𝐱)) for 𝐱 in 𝒳]
     return ([x.time for x in t⃗], [x.bytes for x in t⃗])
 end;
-timeHCTSA([randn(1000)])
+timePyHCTSA([randn(1000)])
 
 N⃗ = Int.(round.(exp10.(0.9:0.1:5)));
 
 ## Single-threaded
 𝒳 = [randn(N) for N in N⃗];
-t⃗, b⃗ = timeHCTSA(𝒳);
+t⃗, b⃗ = timePyHCTSA(𝒳);
 
 gray = :gray50
 p = plot(
@@ -45,7 +45,7 @@ savefig(p, fname)
 ## Multi-threaded
 nsamples = 100
 𝒳 = [randn(N, nsamples) for N in N⃗];
-t⃗, b⃗ = timeHCTSA(𝒳);
+t⃗, b⃗ = timePyHCTSA(𝒳);
 t⃗ = t⃗ ./ nsamples # Time per time series
 b⃗ = b⃗ ./ nsamples # Memory per time series
 

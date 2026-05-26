@@ -1,4 +1,4 @@
-module HCTSA
+module PyHCTSA
 export hctsa
 
 using DimensionalData
@@ -120,7 +120,7 @@ function mop_func(module_name::String, func_name::String, config::Dict)
         Symbol(k) => normalize_config(v)
             for (k, v) in config if _keystring(k) ∉ PREPROCESS_CONFIG_KEYS
     ]
-    op_module = getproperty(HCTSA.pyOperations, module_name)
+    op_module = getproperty(PyHCTSA.pyOperations, module_name)
     op_func = getproperty(op_module, func_name)
     return function f(x)
         try
@@ -368,7 +368,7 @@ function build_mops(mopconfigs::Dict)
 end
 
 function _default_config_path()
-    pyhctsa_file = pyconvert(String, HCTSA.pyhctsa.__file__)
+    pyhctsa_file = pyconvert(String, PyHCTSA.pyhctsa.__file__)
     cfg_path = normpath(joinpath(dirname(pyhctsa_file), "configurations", "hctsa.yaml"))
     isfile(cfg_path) ||
         throw(ArgumentError("pyhctsa configuration file not found at $cfg_path"))
@@ -379,7 +379,7 @@ function load_config(path = nothing)
     if isnothing(path)
         path = _default_config_path()
     end
-    config = HCTSA.yaml.safe_load(read(path, String)) |> HCTSA.py2dict
+    config = PyHCTSA.yaml.safe_load(read(path, String)) |> PyHCTSA.py2dict
     return config
 end
 function build_mops(module_name::String, args...)
@@ -576,7 +576,7 @@ end
 include("Artifacts.jl")
 
 # function build_ops()
-#     mops = HCTSA.build_mops()
+#     mops = PyHCTSA.build_mops()
 #     x = rand(5000)
 #     ops = map(collect(mops)) do mop
 #         y = mop(x)
@@ -617,12 +617,12 @@ include("Artifacts.jl")
 # """
 #     _catchaMouse16(𝐱::AbstractArray{Float64}, fName::Symbol)
 #     _catchaMouse16(fName::Symbol, 𝐱::AbstractArray{Float64})
-# Evaluate the feature `fName` on the single time series `𝐱`. See `HCTSA.featuredescriptions` for a summary of the 22 available time series features. Time series with NaN or Inf values will produce NaN feature values.
+# Evaluate the feature `fName` on the single time series `𝐱`. See `PyHCTSA.featuredescriptions` for a summary of the 22 available time series features. Time series with NaN or Inf values will produce NaN feature values.
 
 # # Examples
 # ```julia
-# 𝐱 = HCTSA.testdata[:test]
-# HCTSA._catchaMouse16(𝐱, :AC_nl_035)
+# 𝐱 = PyHCTSA.testdata[:test]
+# PyHCTSA._catchaMouse16(𝐱, :AC_nl_035)
 # ```
 # """
 # function _catchaMouse16(𝐱::AbstractVector, fName::Symbol)::Float64
@@ -640,7 +640,7 @@ include("Artifacts.jl")
 # end
 
 # """
-# The set of HCTSA features without a preliminary z-score
+# The set of PyHCTSA features without a preliminary z-score
 # """
 # catchaMouse16_raw = FeatureSet(features, featurenames, featuredescriptions, featurekeywords)
 
@@ -655,7 +655,7 @@ include("Artifacts.jl")
 
 # # Examples
 # ```julia
-# 𝐱 = HCTSA.testdata[:test]
+# 𝐱 = PyHCTSA.testdata[:test]
 # 𝐟 = catchaMouse16(𝐱)
 
 # X = randn(100, 10)
@@ -681,7 +681,7 @@ include("Artifacts.jl")
 
 # # Examples
 # ```julia
-# 𝐱 = HCTSA.testdata[:test]
+# 𝐱 = PyHCTSA.testdata[:test]
 # f = AC_nl_035(𝐱)
 # ```
 # """
@@ -689,7 +689,7 @@ include("Artifacts.jl")
 
 # """
 #     c16
-# The HCTSA feature set with shortened names; see [`catchaMouse16`](@ref).
+# The PyHCTSA feature set with shortened names; see [`catchaMouse16`](@ref).
 # """
 # c16 = SuperFeatureSet(features, short_featurenames, featuredescriptions, featurekeywords,
 #                       zᶠ)
