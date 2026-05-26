@@ -5,6 +5,10 @@
 
 HCTSA.jl brings the [_hctsa_](https://github.com/benfulcher/hctsa) feature library into Julia through [pyhctsa](https://github.com/dynamicsandneuralsystems/pyhctsa) and [TimeseriesFeatures.jl](https://github.com/brendanjohnharris/TimeseriesFeatures.jl).
 
+See also:
+- [Catch22.jl](https://github.com/brendanjohnharris/Catch22.jl)
+- [CatchaMouse16.jl](https://github.com/brendanjohnharris/CatchaMouse16.jl)
+
 ## Installation
 ```julia
 using Pkg
