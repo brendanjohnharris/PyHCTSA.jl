@@ -68,6 +68,6 @@ To view warnings from pyhctsa, set `ENV["PYTHON_LOG_LEVEL"] = "1"` before launch
 
 
 ## Notes
-- Some features can differ from pyhctsa due to numerical differences Base.between Julia and Python (especially features that take logarithms of numbers near zero).
+- Some features can differ from pyhctsa due to numerical differences between Julia and Python (especially features that take logarithms of numbers near zero).
 - Features that depend on jpype1 are filtered unless JULIA_COPY_STACKS=1.
 
