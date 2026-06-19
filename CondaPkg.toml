@@ -1,8 +1,3 @@
-# hmmlearn has no cp314 wheel,
-# forcing a source build that fails on Windows MSVC. 3.13 has prebuilt wheels.
-[deps]
-python = ">=3.10,<3.14"
-
 [pip.deps]
 pyhctsa = "@git+https://github.com/dynamicsandneuralsystems/pyhctsa/@main"
 # pyhctsa = ">=0.1.3"
