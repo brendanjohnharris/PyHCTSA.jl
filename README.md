@@ -13,7 +13,6 @@ using Pkg
 Pkg.add("PyHCTSA")
 using PyHCTSA
 ```
-To enable java-dependent features on Mac and Linux, set the environment variable `JULIA_COPY_STACKS=1` before launching Julia. DO NOT do this on Windows, as it will cause crashes.
 
 ## Quick Start
 ```julia
@@ -71,5 +70,3 @@ To view warnings from pyhctsa, set `ENV["PYTHON_LOG_LEVEL"] = "1"` before launch
 
 ## Notes
 - Some features can differ from pyhctsa due to numerical differences between Julia and Python (especially features that take logarithms of numbers near zero).
-- Features that depend on jpype1 are filtered unless JULIA_COPY_STACKS=1.
-

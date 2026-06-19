@@ -16,7 +16,6 @@ const pyOperations = pynew()
 const calculator = pynew()
 const featurebindings = pynew()
 const utils = pynew()
-const jpype = pynew()
 const yaml = pynew()
 const numpy = pynew()
 const pkgutil = pynew()
@@ -38,7 +37,6 @@ function __init__()
     pycopy!(pyOperations, pyimport("pyhctsa.operations"))
     pycopy!(calculator, pyimport("pyhctsa.calculator"))
     pycopy!(utils, pyimport("pyhctsa.utils"))
-    pycopy!(jpype, pyimport("jpype"))
     pycopy!(yaml, pyimport("yaml"))
     pycopy!(numpy, pyimport("numpy"))
     pycopy!(numbers, pyimport("numbers"))
@@ -294,35 +292,6 @@ const numpy_abs_zscore = Feature(
     ["normalization"]
 )
 
-function java_filter(ops)
-    copystacks = get(ENV, "JULIA_COPY_STACKS", 0)
-    if !(copystacks isa Integer) && !(copystacks isa Bool)
-        copystacks = Meta.parse(copystacks)
-    end
-    if convert(Int64, copystacks) == 1
-        return ops
-    else
-        deps = map(getdescriptions(ops)) do desc
-            desc_dict = JSON.parse(desc)
-            if haskey(desc_dict, "dependencies")
-                return desc_dict["dependencies"]
-            elseif haskey(desc_dict, "depedencies")
-                return desc_dict["depedencies"]
-            else
-                return String[]
-            end
-        end
-        java_ops = map(deps) do dep
-            depvec = dep isa AbstractVector ? String.(dep) : String[]
-            return any(==("jpype1"), depvec)
-        end
-        if any(java_ops)
-            @info "Filtering out $(sum(java_ops)) features with Java dependencies (JULIA_COPY_STACKS=$(copystacks)). Please set JULIA_COPY_STACKS=1 to include these features."
-        end
-        return ops[.!java_ops]
-    end
-end
-
 "Builds the set of mops defined by an entry in the yaml file. Note that each entry can specify more than one mop, based on the length of the config entry"
 function build_mops(module_name::String, func_name::String, mopconfig::Dict)
     configs = mopconfig["configs"]
@@ -352,7 +321,7 @@ function build_mops(module_name::String, func_name::String, mopconfig::Dict)
             keywords(mopconfig), Feature(super)
         )
     end
-    return mops = features |> SuperFeatureSet |> java_filter
+    return mops = features |> SuperFeatureSet
 end
 
 function build_mops(module_name::String, mopconfigs::Dict)

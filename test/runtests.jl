@@ -102,8 +102,6 @@ end
     )
     @test d1["dependencies"] == ["a", "b"]
 
-    d2 = JSON.parse(PyHCTSA.description(Dict("base_name" => "f", "depedencies" => ["jpype1"])))
-    @test d2["dependencies"] == ["jpype1"]
 
     d3 = JSON.parse(
         PyHCTSA.description(
@@ -230,36 +228,6 @@ end
     vals = Any[1.0, Py(2), Py("bad"), d]
     q = PyHCTSA.mop_quality(vals)
     @test q == [true, true, false, true]
-end
-
-@testitem "java_filter handles env parsing" setup = [Setup] begin
-    config = PyHCTSA.load_config()
-    @test haskey(config, "correlation")
-    @test haskey(config["correlation"], "add_noise")
-
-    old = get(ENV, "JULIA_COPY_STACKS", nothing)
-    try
-        ENV["JULIA_COPY_STACKS"] = "0"
-        filtered = PyHCTSA.build_mops(
-            "correlation", "add_noise",
-            config["correlation"]["add_noise"]
-        )
-
-        ENV["JULIA_COPY_STACKS"] = "1"
-        unfiltered = PyHCTSA.build_mops(
-            "correlation", "add_noise",
-            config["correlation"]["add_noise"]
-        )
-
-        @test length(unfiltered) >= length(filtered)
-        @test length(unfiltered) > 0
-    finally
-        if isnothing(old)
-            pop!(ENV, "JULIA_COPY_STACKS", nothing)
-        else
-            ENV["JULIA_COPY_STACKS"] = old
-        end
-    end
 end
 
 @testitem "cache_mopops and load_mopops round-trip" setup = [Setup] begin

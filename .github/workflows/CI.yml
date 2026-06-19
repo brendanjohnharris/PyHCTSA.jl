@@ -26,7 +26,7 @@ jobs:
         os:
           - ubuntu-latest
           - macOS-latest
-          # - windows-latest
+          - windows-latest
         arch:
           - x64
           - aarch64
@@ -46,10 +46,6 @@ jobs:
       - uses: julia-actions/cache@v3
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
-        env:
-          # JULIA_COPY_STACKS=1 enables Java-dependent features but is
-          # unsupported on Windows, where it crashes the test workers.
-          JULIA_COPY_STACKS: ${{ runner.os == 'Windows' && '0' || '1' }}
       - uses: julia-actions/julia-processcoverage@v1
       - uses: codecov/codecov-action@v6
         if: matrix.os == 'ubuntu-latest' && matrix.version == '1.12' && matrix.arch == 'x64'
