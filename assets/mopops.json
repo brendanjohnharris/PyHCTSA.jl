@@ -995,7 +995,6 @@
     "stdskew",
     "stdkurt",
     "stdsampen1_015",
-    "stdsampen2_015",
     "stdac1",
     "stdac2",
     "stdactaug",
@@ -1013,8 +1012,6 @@
     "max_thetaac2",
     "min_thetaac2",
     "mean_thetaac3",
-    "max_thetaac3",
-    "min_thetaac3",
     "meanrat_thetaac12",
     "diff_thetaac12"
   ],
@@ -1241,7 +1238,6 @@
     "rmse",
     "stde",
     "mms",
-    "maxonmean",
     "ac1",
     "ac2",
     "ac3",
@@ -1269,12 +1265,12 @@
   "first_max_mi-gaussian": [],
   "first_max_mi-hist_10": [],
   "first_max_mi-hist_5": [],
-  "first_max_mi-kraskov2_4": [],
+  "first_max_mi-kraskov1_4": [],
   "first_min_ac": [],
   "first_min_mi-gaussian": [],
   "first_min_mi-hist_10": [],
   "first_min_mi-hist_5": [],
-  "first_min_mi-kraskov2_4": [],
+  "first_min_mi-kraskov1_4": [],
   "fit_mle_geometric_raw": [],
   "fit_polynomial_1": [],
   "fit_polynomial_2": [],
@@ -1814,6 +1810,7 @@
     "mean_p",
     "std_p",
     "LLtrainpersample",
+    "nit",
     "LLtestpersample",
     "LLdifference"
   ],
@@ -1832,6 +1829,7 @@
     "mean_p",
     "std_p",
     "LLtrainpersample",
+    "nit",
     "LLtestpersample",
     "LLdifference"
   ],
@@ -1849,6 +1847,7 @@
     "mean_p",
     "std_p",
     "LLtrainpersample",
+    "nit",
     "LLtestpersample",
     "LLdifference"
   ],
@@ -1867,6 +1866,7 @@
     "mean_p",
     "std_p",
     "LLtrainpersample",
+    "nit",
     "LLtestpersample",
     "LLdifference"
   ],
@@ -1964,43 +1964,36 @@
   "local_distributions_2_each": [],
   "local_distributions_2_par": [
     "meandiv",
-    "mediandiv",
     "maxdiv",
     "stddiv"
   ],
   "local_distributions_3_each": [
     "meandiv",
-    "mediandiv",
     "maxdiv",
     "stddiv"
   ],
   "local_distributions_3_par": [
     "meandiv",
-    "mediandiv",
     "maxdiv",
     "stddiv"
   ],
   "local_distributions_4_each": [
     "meandiv",
-    "mediandiv",
     "maxdiv",
     "stddiv"
   ],
   "local_distributions_4_par": [
     "meandiv",
-    "mediandiv",
     "maxdiv",
     "stddiv"
   ],
   "local_distributions_5_each": [
     "meandiv",
-    "mediandiv",
     "maxdiv",
     "stddiv"
   ],
   "local_distributions_5_par": [
     "meandiv",
-    "mediandiv",
     "maxdiv",
     "stddiv"
   ],
@@ -2878,9 +2871,9 @@
     "stdq",
     "meanqover",
     "pkick",
-    "stdkicks",
+    "stdkickf",
     "meankickf",
-    "mediankicksf"
+    "mediankickf"
   ],
   "moving_threshold_0p1_0p1": [
     "meanq",
@@ -2891,9 +2884,9 @@
     "stdq",
     "meanqover",
     "pkick",
-    "stdkicks",
+    "stdkickf",
     "meankickf",
-    "mediankicksf"
+    "mediankickf"
   ],
   "moving_threshold_1_0p02": [
     "meanq",
@@ -2904,9 +2897,9 @@
     "stdq",
     "meanqover",
     "pkick",
-    "stdkicks",
+    "stdkickf",
     "meankickf",
-    "mediankicksf"
+    "mediankickf"
   ],
   "moving_threshold_1_0p1": [
     "meanq",
@@ -2917,9 +2910,9 @@
     "stdq",
     "meanqover",
     "pkick",
-    "stdkicks",
+    "stdkickf",
     "meankickf",
-    "mediankicksf"
+    "mediankickf"
   ],
   "multi_scale_entropy_1_to_10_2_0p15": [
     "sampen_s1",
@@ -2988,7 +2981,6 @@
     "rmse",
     "stde",
     "mms",
-    "maxonmean",
     "ac1",
     "ac2",
     "ac3",
@@ -3010,7 +3002,6 @@
     "rmse",
     "stde",
     "mms",
-    "maxonmean",
     "ac1",
     "ac2",
     "ac3",
@@ -3193,11 +3184,11 @@
   "pol_var_1_5": [],
   "pol_var_1_6": [],
   "preproc_compare_diff1_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3211,15 +3202,14 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "preproc_compare_diff2_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3233,81 +3223,14 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
-    "olbt_s5"
-  ],
-  "preproc_compare_medianf10_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
-    "swms2_2",
-    "swms5_1",
-    "swms5_2",
-    "swms10_1",
-    "swms10_2",
-    "swss2_1",
-    "swss2_2",
-    "swss5_1",
-    "swss5_2",
-    "swss10_1",
-    "swss10_2",
-    "olbt_m2",
-    "olbt_m5",
-    "olbt_s2",
-    "olbt_s5"
-  ],
-  "preproc_compare_medianf3_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
-    "swms2_2",
-    "swms5_1",
-    "swms5_2",
-    "swms10_1",
-    "swms10_2",
-    "swss2_1",
-    "swss2_2",
-    "swss5_1",
-    "swss5_2",
-    "swss10_1",
-    "swss10_2",
-    "olbt_m2",
-    "olbt_m5",
-    "olbt_s2",
-    "olbt_s5"
-  ],
-  "preproc_compare_medianf4_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
-    "swms2_2",
-    "swms5_1",
-    "swms5_2",
-    "swms10_1",
-    "swms10_2",
-    "swss2_1",
-    "swss2_2",
-    "swss5_1",
-    "swss5_2",
-    "swss10_1",
-    "swss10_2",
-    "olbt_m2",
-    "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "preproc_compare_poly1_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3321,15 +3244,14 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "preproc_compare_poly2_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3343,15 +3265,14 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "preproc_compare_rav10_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3365,15 +3286,14 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "preproc_compare_rav2_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3387,15 +3307,14 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "preproc_compare_rav3_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3409,15 +3328,14 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "preproc_compare_rav4_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3431,15 +3349,14 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "preproc_compare_resample_1_2_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3453,15 +3370,14 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "preproc_compare_resample_2_1_raw": [
-    "statv2",
-    "statv4",
-    "statv6",
-    "statv8",
-    "statv10",
+    "statav2",
+    "statav4",
+    "statav6",
+    "statav8",
+    "statav10",
     "swms2_2",
     "swms5_1",
     "swms5_2",
@@ -3475,7 +3391,6 @@
     "swss10_2",
     "olbt_m2",
     "olbt_m5",
-    "olbt_s2",
     "olbt_s5"
   ],
   "proportion_values_geq0_raw": [],
@@ -4287,8 +4202,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_100_4_updown_500": [
     "min",
@@ -4298,8 +4212,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_100_5_quantile_500": [
     "min",
@@ -4309,8 +4222,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_100_5_updown_500": [
     "min",
@@ -4320,8 +4232,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_10_1_embed2quadrants_500": [
     "min",
@@ -4331,8 +4242,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_10_tau_embed2quadrants_500": [
     "min",
@@ -4342,8 +4252,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_20_2_quantile_500": [
     "min",
@@ -4353,8 +4262,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_20_2_updown_500": [
     "min",
@@ -4364,8 +4272,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_20_tau_embed2quadrants_500": [
     "min",
@@ -4375,8 +4282,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_50_2_quantile_500": [
     "min",
@@ -4386,8 +4292,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_50_3_updown_500": [
     "min",
@@ -4397,8 +4302,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T1_50_tau_embed2quadrants_500": [
     "min",
@@ -4408,8 +4312,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_100_4_quantile_500": [
     "min",
@@ -4419,8 +4322,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_100_4_updown_500": [
     "min",
@@ -4430,8 +4332,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_100_5_quantile_500": [
     "min",
@@ -4441,8 +4342,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_100_5_updown_500": [
     "min",
@@ -4452,8 +4352,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_100_tau_embed2quadrants_500": [
     "min",
@@ -4463,8 +4362,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_20_2_quantile_500": [
     "min",
@@ -4474,8 +4372,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_20_2_updown_500": [
     "min",
@@ -4485,8 +4382,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_50_2_quantile_500": [
     "min",
@@ -4496,8 +4392,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_50_2_updown_500": [
     "min",
@@ -4507,8 +4402,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_T2_50_tau_embed2quadrants_500": [
     "min",
@@ -4518,8 +4412,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_100_4_quantile_500": [
     "min",
@@ -4529,8 +4422,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_100_4_updown_500": [
     "min",
@@ -4540,8 +4432,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_100_5_quantile_500": [
     "min",
@@ -4551,8 +4442,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_100_5_updown_500": [
     "min",
@@ -4562,8 +4452,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_10_tau_embed2quadrants_500": [
     "min",
@@ -4573,8 +4462,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_20_2_quantile_500": [
     "min",
@@ -4584,8 +4472,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_20_2_updown_500": [
     "min",
@@ -4595,8 +4482,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_20_tau_embed2quadrants_500": [
     "min",
@@ -4606,8 +4492,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_50_3_quantile_500": [
     "min",
@@ -4617,8 +4502,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_50_3_updown_500": [
     "min",
@@ -4628,8 +4512,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_5_1_embed2quadrants_500": [
     "min",
@@ -4639,8 +4522,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_5_2_quantile_500": [
     "min",
@@ -4650,8 +4532,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_5_2_updown_500": [
     "min",
@@ -4661,8 +4542,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surprise_dist_5_tau_embed2quadrants_500": [
     "min",
@@ -4672,8 +4552,7 @@
     "median",
     "lq",
     "uq",
-    "std",
-    "tstat"
+    "std"
   ],
   "surrogate_test_RP_99_ami1": [
     "ami_p",
@@ -5058,7 +4937,6 @@
     "maxonmedian",
     "ol90",
     "olu90",
-    "entropy",
     "gaussnlogL",
     "expnlogL",
     "kac1",
@@ -5080,7 +4958,6 @@
     "maxonmedian",
     "ol90",
     "olu90",
-    "entropy",
     "gaussnlogL",
     "expnlogL",
     "kac1",
@@ -5106,7 +4983,6 @@
     "sw_maxrat",
     "sw_propcross",
     "sw_ansarib_pval",
-    "sw_distdiff",
     "res_runstest",
     "res_swss5_1",
     "res_ac1"
@@ -5129,7 +5005,6 @@
     "sw_maxrat",
     "sw_propcross",
     "sw_ansarib_pval",
-    "sw_distdiff",
     "res_runstest",
     "res_swss5_1",
     "res_ac1"
@@ -5152,7 +5027,6 @@
     "sw_maxrat",
     "sw_propcross",
     "sw_ansarib_pval",
-    "sw_distdiff",
     "res_runstest",
     "res_swss5_1",
     "res_ac1"
@@ -5175,7 +5049,6 @@
     "sw_maxrat",
     "sw_propcross",
     "sw_ansarib_pval",
-    "sw_distdiff",
     "res_runstest",
     "res_swss5_1",
     "res_ac1"
@@ -5198,7 +5071,6 @@
     "sw_maxrat",
     "sw_propcross",
     "sw_ansarib_pval",
-    "sw_distdiff",
     "res_runstest",
     "res_swss5_1",
     "res_ac1"
@@ -5221,7 +5093,6 @@
     "sw_maxrat",
     "sw_propcross",
     "sw_ansarib_pval",
-    "sw_distdiff",
     "res_runstest",
     "res_swss5_1",
     "res_ac1"
@@ -5244,7 +5115,6 @@
     "sw_maxrat",
     "sw_propcross",
     "sw_ansarib_pval",
-    "sw_distdiff",
     "res_runstest",
     "res_swss5_1",
     "res_ac1"
@@ -5267,7 +5137,6 @@
     "sw_maxrat",
     "sw_propcross",
     "sw_ansarib_pval",
-    "sw_distdiff",
     "res_runstest",
     "res_swss5_1",
     "res_ac1"
@@ -5290,7 +5159,6 @@
     "sw_maxrat",
     "sw_propcross",
     "sw_ansarib_pval",
-    "sw_distdiff",
     "res_runstest",
     "res_swss5_1",
     "res_ac1"
