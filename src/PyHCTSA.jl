@@ -27,6 +27,10 @@ const PYTHON_LOG_LEVEL = let env_level = tryparse(Int, get(ENV, "PYTHON_LOG_LEVE
     isnothing(env_level) ? Int(@load_preference("python_log_level", 50)) : env_level
 end
 
+const PYTHON_WARNING_LEVEL = let env_level = get(ENV, "PYTHON_WARNING_LEVEL", "")
+    isempty(env_level) ? @load_preference("python_warning_level", "ignore") : env_level
+end
+
 const PREPROCESS_CONFIG_KEYS = Set(["zscore", "abs"])
 DEFAULT_CHART() = Chart(ProgressLogger())
 
@@ -50,7 +54,9 @@ function __init__()
     # * Kill python messages
     logging = pyimport("logging")
     logging.disable(PYTHON_LOG_LEVEL)
-    # * Set PYTHON_LOG_LEVEL in preferences or ENV before loading
+    warnings = pyimport("warnings")
+    warnings.simplefilter(PYTHON_WARNING_LEVEL)
+    # * Set PYTHON_LOG_LEVEL and PYTHON_WARNING_LEVEL in preferences or ENV before loading
 
     # * Build default feature set after Python modules are initialized
     return global hctsa = build_ops()

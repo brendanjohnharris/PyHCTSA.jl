@@ -56,7 +56,9 @@ Y = hctsa(X; chart = Chart(Pmap(), QualityLogger())) # Takes a few seconds each 
 
 ### Debug logging
 Enable PyHCTSA debug logs in the current Julia session with `ENV["JULIA_DEBUG"] = "PyHCTSA"`; this will show errors in feature computation.
-To view warnings from pyhctsa, set `ENV["PYTHON_LOG_LEVEL"] = "1"` before launching Julia (or set the `python_log_level` preference).
+To view logging output from pyhctsa, set `ENV["PYTHON_LOG_LEVEL"] = "1"` before launching Julia (or set the `python_log_level` preference); this is passed to Python's `logging.disable`, so lower values show more (the default `50` suppresses everything up to `CRITICAL`).
+
+Python warnings are controlled separately via `PYTHON_WARNING_LEVEL`, which is passed to Python's `warnings.simplefilter`. It defaults to `"ignore"` (warnings suppressed). Set `ENV["PYTHON_WARNING_LEVEL"] = "default"` before launching Julia (or set the `python_warning_level` preference) to show them; other accepted actions are `"error"`, `"always"`, `"module"`, and `"once"`.
 
 
 
