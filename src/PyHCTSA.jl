@@ -1,5 +1,5 @@
 module PyHCTSA
-export hctsa
+export hctsa, hctsa90
 
 using DimensionalData
 using Reexport
@@ -21,7 +21,7 @@ const numpy = pynew()
 const pkgutil = pynew()
 const numbers = pynew()
 
-export hctsa
+export hctsa, hctsa90
 
 const PYTHON_LOG_LEVEL = let env_level = tryparse(Int, get(ENV, "PYTHON_LOG_LEVEL", ""))
     isnothing(env_level) ? Int(@load_preference("python_log_level", 50)) : env_level
@@ -35,6 +35,7 @@ const PREPROCESS_CONFIG_KEYS = Set(["zscore", "abs"])
 DEFAULT_CHART() = Chart(ProgressLogger())
 
 hctsa = nothing
+hctsa90 = nothing
 
 function __init__()
     pycopy!(pyhctsa, pyimport("pyhctsa"))
@@ -59,7 +60,10 @@ function __init__()
     # * Set PYTHON_LOG_LEVEL and PYTHON_WARNING_LEVEL in preferences or ENV before loading
 
     # * Build default feature set after Python modules are initialized
-    return global hctsa = build_ops()
+    global hctsa = build_ops()
+    # * Restrict to the fastest 90% of mops (see test/analyze_feature_times.jl)
+    global hctsa90 = load_hctsa90(hctsa)
+    return hctsa
 end
 
 @reexport using TimeseriesFeatures
@@ -119,16 +123,26 @@ function normalize_config(x::AbstractVector)
 end
 normalize_config(x) = identity(x)
 function mop_func(module_name::String, func_name::String, config::Dict)
-    config = filter(p -> _keystring(p.first) ∉ PREPROCESS_CONFIG_KEYS, config)
+    # Keep `config` as plain Julia data (drop preprocessing keys, but *defer* the
+    # `pylist` conversion) and resolve the Python operation lazily inside the
+    # call. This keeps the returned closure free of any `Py` objects, so it can
+    # be serialized to Distributed (`Pmap`) workers without triggering
+    # PythonCall's pickle-based `Py` serialization, which is not robust under the
+    # cluster's multithreaded/high-GC conditions and corrupts the byte stream
+    # (manifesting as UnicodeDecodeError/UnpicklingError/EOFError on workers).
+    # Each worker resolves the operation from its own local `pyOperations`.
     config = [
-        Symbol(k) => normalize_config(v)
+        Symbol(k) => v
             for (k, v) in config if _keystring(k) ∉ PREPROCESS_CONFIG_KEYS
     ]
-    op_module = getproperty(PyHCTSA.pyOperations, module_name)
-    op_func = getproperty(op_module, func_name)
     return function f(x)
         try
-            return PythonCall.GIL.@lock op_func(x; config...)
+            return PythonCall.GIL.@lock begin
+                op_module = getproperty(PyHCTSA.pyOperations, module_name)
+                op_func = getproperty(op_module, func_name)
+                kwargs = [k => normalize_config(v) for (k, v) in config]
+                op_func(x; kwargs...)
+            end
         catch e
             @debug "Error computing feature $module_name:$func_name" exception = (
                 e,
@@ -426,15 +440,15 @@ function get_op(mopval, opname, mop)
         elseif haskey(mopval, "out")
             return convert_op(mopval["out"], opname)
         end
-        @warn "$(getname(mop)) output has no key $opname. Valid keys: $(_mop_output_keys(mopval))"
+        @debug "$(getname(mop)) output has no key $opname. Valid keys: $(_mop_output_keys(mopval))"
         return NaN
     elseif pyisinstance(mopval, numbers.Number)
         return pyconvert(Float64, mopval)
     elseif pyisinstance(mopval, numpy.ndarray)
-        @warn "$(getname(mop)) output $mopval is not subscriptable; maybe it errored and returned NaN?"
+        @debug "$(getname(mop)) output $mopval is not subscriptable; maybe it errored and returned NaN?"
         return NaN
     else
-        @warn "$(getname(mop)) output has unsupported container type for key extraction ($mopval)"
+        @debug "$(getname(mop)) output has unsupported container type for key extraction ($mopval)"
         return NaN
     end
 end
@@ -546,6 +560,29 @@ function build_ops(mops = build_mops(), mopops = load_mopops())
             end
         end
     end |> Iterators.flatten |> collect |> Vector{SuperFeature} |> SuperFeatureSet
+end
+
+"""
+    load_hctsa90(ops = hctsa, path = <assets/hctsa90.txt>)
+
+Restrict the op-level feature set `ops` to those belonging to the fastest 90% of
+mops. The asset `hctsa90.txt` lists one surviving *mop* base name per line (the
+slowest 10% of mops were dropped; see `test/analyze_feature_times.jl`). Each op
+is named `mop` or `mop.output`, so an op is kept when its leading `mop` token is
+in the list.
+"""
+function load_hctsa90(
+        ops = hctsa,
+        path = joinpath(@__DIR__, "../assets/hctsa90.txt")
+    )
+    if !isfile(path)
+        @warn "hctsa90 asset not found at $path; falling back to the full feature set. Generate it with test/analyze_feature_times.jl."
+        return ops
+    end
+    keep = Set(filter(!isempty, strip.(readlines(path))))     # surviving mop base names
+    # ops are named `mop` or `mop.output`; keep every op whose mop survived
+    keep_names = filter(n -> first(split(String(n), '.')) ∈ keep, getnames(ops))
+    return ops[keep_names]
 end
 
 include("Artifacts.jl")
